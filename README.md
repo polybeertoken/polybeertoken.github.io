@@ -33,7 +33,7 @@ TOTAL||||1 per 100 blocks in average||150,171|3,539,464|
 Difficulty is expressed as a simple intgeer number between 20 and 218. The difficulty 20 is the easiest one and the difficulty 218 is the most hard. In average the miners will have to generate 2 powered to difficulty number of hashes in order to solve the challenge. The table below shows an average time needed to solve a challenge of particular difficulty using a web browser (hash rate 10K hashes / second), GO Miner tool on PC (5M hashes / second), and on custom mining solution using a GPU or FPGA (5G hashes / second)
 
 |Difficulty|Hash Count|Web Browser||GO Miner||Custom/GPU||
-|---|---:|---:|---|---:|---|---:|---|---:|---|
+|---|---:|---:|---|---:|---|---:|---|
 |20|1048576|1.75|min|0.21|s|0.00|s|
 |22|4194304|6.99|min|0.84|s|0.00|s|
 |24|16777216|27.96|min|3.36|s|0.00|s|
