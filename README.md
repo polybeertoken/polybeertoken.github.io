@@ -16,7 +16,7 @@ The coin's smart contract presents miners a list of challenges of various diffic
 
 ## Challenges
 
-Smart contract can create a new challenge in average every 100 POlygon blocks. We assume each Polygon blocks takes approximately 2.1 seconds so a new challenge can be added approximately every 3.5 minutes. The challenges are actually hashes of the most recent blocks deterministally selected by the smart contract at the time of their challenge creation. The goal of the miners is to combine this hash with the unique address of their wallet and find a nonce that will produce Keccak-256 hash withing certain range limited by difficulty. By combining the block-hash with individual wallet address the miners are looking for unique solutions specific for their wallets. That way it's not possible to use one solution for claiming multiple rewards. The challenges with special block-hashes that start with one or more lucky digits number 8 are classified as premium challenges, that have higher rewards and higher number of mienrs can claim them. Below is a summary of all types of challenges and their properties.
+Smart contract can create a new challenge in average every 100 Polygon blocks. We assume each Polygon blocks takes approximately 2.1 seconds so a new challenge can be added approximately every 3.5 minutes. The challenges are actually hashes of the most recent blocks deterministically selected by the smart contract at the time of their challenge creation. The goal of the miners is to combine this hash with the unique address of their wallet and find a nonce that will produce Keccak-256 hash withing certain range limited by difficulty. By combining the block-hash with individual wallet address the miners are looking for unique solutions specific for their wallets. That way it's not possible to use one solution for claiming multiple rewards. The challenges with special block-hashes that start with one or more lucky digits number 8 are classified as premium challenges, that have higher rewards and higher number of miners can claim them. Below is a summary of all types of challenges and their properties.
 
 |Level|Challenge|BlockHash Criteria|Reward Coins|Block Frequency|Time Frequency|Challenges Per Year|Coins per Year|
 |:---:|---|---|:---:|---|---|---:|---:|
@@ -30,7 +30,7 @@ TOTAL||||1 per 100 blocks in average||150,171|3,539,464|
 
 ## Solved Difficulty
 
-The smart contract verifies if the miner solved the required difficulty as below. The keccak256 hash is calculated on blob produced by combining bits pf block number, block hash, and wallet address, concatenated with the solution found by the miner. If the top N bits in the resulting hash are all 0, then the smart contract will acknowledge the miners solution bits are solving the required difficulty of N.
+The smart contract verifies if the miner solved the required difficulty as below. The keccak256 hash is calculated on blob produced by combining bits pf block number, block hash, and wallet address, concatenated with the solution found by the miner. If the top N bits in the resulting hash are all 0, then the smart contract will acknowledge the miner's solution bits are solving the required difficulty of N.
 
 ```
     function verifySolution(uint64 blockNumber, uint256 solution) public view whenNotPaused returns (uint16 solvedDifficulty) {
@@ -44,7 +44,7 @@ The smart contract verifies if the miner solved the required difficulty as below
 
 ## Difficulty
 
-Difficulty is expressed as a simple integer number between 20 and 218. The difficulty 20 is the easiest one and the difficulty 218 is the most hard. In average the miners will have to generate 2 powered to difficulty number of hashes in order to solve the challenge. The table below shows an average time needed to solve a challenge of particular difficulty using a web browser (hash rate 10K hashes / second), GO Miner tool on PC (5M hashes / second), and on custom mining solution using a GPU or FPGA (5G hashes / second)
+Difficulty is expressed as a simple integer number between 20 and 218. The difficulty 20 is the easiest one and the difficulty 218 is the hardest. In average the miners will have to generate 2 powered to difficulty number of hashes in order to solve the challenge. The table below shows an average time needed to solve a challenge of a particular difficulty using a web browser (hash rate 10K hashes / second), GO Miner tool on PC (5M hashes / second), and on custom mining solution using a GPU or FPGA (5G hashes / second)
 
 |Difficulty|Hash Count|Web Browser||GO Miner||Custom/GPU||
 |---|---:|---:|---|---:|---|---:|---|
@@ -96,27 +96,27 @@ Difficulty is expressed as a simple integer number between 20 and 218. The diffi
 |110|1.29807E+33|4,113,348,970,243,960,000,000.00|years|8,226,697,940,487,910,000.00|years|8,226,697,940,487,910.00|years|
 
 As we see, even though difficulty is expressed as a simple number, it is practically impossible to solve challenges with higher difficulty number using current technologies.
-For example a custom solution with 5G/s hash rate would need 8 billion years to solve the difficulty 100. That is longer than the lifetime of the sun.
+For example, a custom solution with 5G/s hash rate would need 8 billion years to solve the difficulty 100. That is longer than the lifetime of the sun.
 
 ## Difficulty Discounts
 
-In order to make the mining process more fair and balanced, the smart contract will grant discounted difficulty to specific miners using predefined rules based on their wallet address and their registered balance.
+In order to make the mining process fair and balanced, the smart contract will grant discounted difficulty to specific miners using predefined rules based on their wallet address and their registered balance.
 
 ## Registered Ballance
 
-In order to incentivise saving and accumulation of BERR coins, the smart will grant some discounts to miners based on their BEER token balance. In order to have fair rules, it is not desirable to apply the current balance at the time of claiming the reward, because miners could easily borrow or move coins to their wallets right before claiming. It is only fair to apply the balance maintained during the whole time of mining any particlar challenge. From technical perspective it is not practical to keep the full history of the wallet balances in the blockchain. Therefore we came out with the concept of "registered balance", which will be managed by the smart contract as follows.
+In order to incentivize saving and accumulation of BERR coins, the smart will grant some discounts to miners based on their BEER token balance. In order to have fair rules, it is not desirable to apply the current balance at the time of claiming the reward, because miners could easily borrow or move coins to their wallets right before claiming. It is only fair to apply the balance maintained during the whole time of mining any challenge. From technical perspective it is not practical to keep the full history of the wallet balances in the blockchain. Therefore, we came out with the concept of "registered balance", which will be managed by the smart contract as follows.
 
 * at the smart contract creation, the registered balance of any wallet is 0
-* when wallet receives and mines any BEER coins, the owner can register their non zero balance with the smart contract from the mining web page
-* the registered balance will be applicanle to future challenges created after the registration
-* the smart contract will maintain up to 3 registerd balances applicable at time intervals between the registration
-* the latest registrered balance will be automatically by the smart contract adjusted downwards, in case any trasfer decreases the current balance below the latest registered balance
-* in case any coin trasfer increases the current balance, the smart contract will NOT adjust the latest registered balance
+* when wallet receives and mines any BEER coins, the owner can register their non-zero balance with the smart contract from the mining web page
+* the registered balance will be applicable to future challenges created after the registration
+* the smart contract will maintain up to 3 registered balances applicable at time intervals between the registration
+* the latest registred balance will be automatically by the smart contract adjusted downwards, in case any transfer decreases the current balance below the latest registered balance
+* in case any coin transfer increases the current balance, the smart contract will NOT adjust the latest registered balance
 
 Based on the rules above the miners might consider registering their balance in following cases:
 
 * after increasing a balance in their wallet to make the smart contract apply the higher registered balance
-* before selling or tranferring out the coins from the wallet, to protect the latest registered amount for the period since it was registered
+* before selling or transferring out the coins from the wallet, to protect the latest registered amount for the period since it was registered
 
 ## Wallet Difficulty Discount
 
@@ -169,7 +169,7 @@ The wallet difficulty discount is then determined as follows:
 * N - number of matching lowest significant bits between the wallet address and the block-hash
 * RB - registered balance, number of BEER coins in the wallet
 
-The maximum wallet discount possible is 30. Please note the wallet discount is capped at 10 on wallets with no or very little balance, to limit ability of miners to generate huge number of wallets for the sole purpose of matching the the challenges.
+The maximum wallet discount possible is 30. Please note the wallet discount is capped at 10 on wallets with no or very little balance, to limit ability of miners to generate huge number of wallets for the sole purpose of matching the challenges.
 
 ## Balance Discount
 
@@ -199,7 +199,7 @@ The wallet discount can further be amplified by a balance discount granted by th
 |500|28|
 |1000|30|
 
-The maximum balance discount is 30 at the registered balance of 1000 coins. The maximum combined wallet and balances discount is 60, which is an amount large enough to give any individual a chance to compete is the most advanged pools of mining resources.
+The maximum balance discount is 30 at the registered balance of 1000 coins. The maximum combined wallet and balances discount is 60, which is an amount large enough to give any individual a chance to compete with the most advanced pools of mining resources.
 
 ## Beer Coin Mining Page
 
