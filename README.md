@@ -28,9 +28,23 @@ Smart contract can create a new challenge in average every 100 POlygon blocks. W
 |5|Premium|Starts with 0x88888|500 x 2000 coins|1 per 104,857,600 blocks|~7 years|0.14|143,215|
 TOTAL||||1 per 100 blocks in average||150,171|3,539,464|
 
+## Solved Difficulty
+
+The smart contract verifies if the miner solved the required difficulty as below. The keccak256 hash is calculated on blob produced by combining bits pf block number, block hash, and wallet address, concatenated with the solution found by the miner. If the top N bits in the resulting hash are all 0, then the smart contract will acknowledge the miners solution bits are solving the required difficulty of N.
+
+```
+    function verifySolution(uint64 blockNumber, uint256 solution) public view whenNotPaused returns (uint16 solvedDifficulty) {
+        (Challenge memory ch, bool premium, uint8 generalDifficulty) = _retrieveChallenge(blockNumber);
+
+        bytes32 digest = keccak256(abi.encodePacked(uint256(ch.blockNumber) ^ uint256(ch.blockHash) ^ uint256(msg.sender), solution));
+
+        solvedDifficulty = 256 - _findHsb(uint256(digest));
+    }
+```
+
 ## Difficulty
 
-Difficulty is expressed as a simple intgeer number between 20 and 218. The difficulty 20 is the easiest one and the difficulty 218 is the most hard. In average the miners will have to generate 2 powered to difficulty number of hashes in order to solve the challenge. The table below shows an average time needed to solve a challenge of particular difficulty using a web browser (hash rate 10K hashes / second), GO Miner tool on PC (5M hashes / second), and on custom mining solution using a GPU or FPGA (5G hashes / second)
+Difficulty is expressed as a simple integer number between 20 and 218. The difficulty 20 is the easiest one and the difficulty 218 is the most hard. In average the miners will have to generate 2 powered to difficulty number of hashes in order to solve the challenge. The table below shows an average time needed to solve a challenge of particular difficulty using a web browser (hash rate 10K hashes / second), GO Miner tool on PC (5M hashes / second), and on custom mining solution using a GPU or FPGA (5G hashes / second)
 
 |Difficulty|Hash Count|Web Browser||GO Miner||Custom/GPU||
 |---|---:|---:|---|---:|---|---:|---|
